@@ -132,14 +132,14 @@ class State:
     def walk(self, region: int, ground_type: int, lr: bool):
         if lr:
             self.rng.rand()
-        if self.frac >= 0x10:
-            self.frac = 0
-            if ground_type == 0x10:
-                ground_type = 0
-            if ground_type == 0x18:
-                ground_type = 8
-            if GROUND_TYPES[region].index(ground_type) >= 0:
+        if ground_type == 0x10:
+            ground_type = 0
+        if ground_type == 0x18:
+            ground_type = 8
+        if ground_type in GROUND_TYPES[region]:
+            if self.frac >= 0x10:
+                self.frac = 0
                 self.enc_check(EncTable(ENCOUNTER_DATA[region][GROUND_TYPES[region].index(ground_type)]))
-        else:
-            self.frac += 1
+            else:
+                self.frac += 1
         self.walkframes += 1

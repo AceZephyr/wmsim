@@ -18,7 +18,8 @@ def run(igt: int):
 
         # desert edge
         for _ in range(12):
-            s.rng.rand()
+            # s.rng.rand()
+            s.walk(4, 28, True)
 
         # grass
         for _ in range(172):
@@ -34,12 +35,7 @@ def run(igt: int):
         return b, s
 
 
-n = 0
-
-c = time.time()
-for x in range(10000):
-    b, s = run(x)
+for x in range(10800, 10800 + 180):
+    b, s = run(x+6)
     if b.battle_id in {92, 93, 94}:
-        n += 1
-
-print(time.time() - c, n)
+        print(x, s.walkframes, b.battle_id)
