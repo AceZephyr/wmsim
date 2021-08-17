@@ -1,5 +1,3 @@
-import time
-
 from state import State, Battle
 
 

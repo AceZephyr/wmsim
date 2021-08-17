@@ -41,7 +41,7 @@ class State:
     def preempt_128(self):
         return int((self.preemptval & 0x80) != 0)
 
-    def enc_check(self, enctable: EncTable):
+    def enc_check(self, enctable: EncTable, chocotracks: bool = False):
         enc = -1
         local2 = 0
         local9 = 0  # 1 if yuffie
@@ -50,7 +50,7 @@ class State:
             if self.rng.rand() and False:  # yuffie check, assume it fails for now
                 pass
             else:
-                if self.chocoval > 0:
+                if self.chocoval > 0 and chocotracks:
                     tmp = (self.rng.rand() << 0xC) / self.chocoval
                     threshold = enctable.alt[0]
                     if threshold > tmp:
@@ -67,8 +67,6 @@ class State:
                                 threshold += enctable.alt[3]
                                 if threshold > tmp:
                                     enc = enctable.alt[3] & 0x3FF
-                                else:
-                                    raise Exception("oh no")
 
                 local2 = self.rng.rand() < self.preempt_function()
                 if not local2:  # special encs check
@@ -129,7 +127,7 @@ class State:
         if enc != -1:
             raise Battle(enc, local2, local9)
 
-    def walk(self, region: int, ground_type: int, lr: bool):
+    def walk(self, region: int, ground_type: int, lr: bool, chocotracks: bool = False):
         if lr:
             self.rng.rand()
         if ground_type == 0x10:
@@ -139,7 +137,8 @@ class State:
         if ground_type in GROUND_TYPES[region]:
             if self.frac >= 0x10:
                 self.frac = 0
-                self.enc_check(EncTable(ENCOUNTER_DATA[region][GROUND_TYPES[region].index(ground_type)]))
+                self.enc_check(enctable=EncTable(ENCOUNTER_DATA[region][GROUND_TYPES[region].index(ground_type)]),
+                               chocotracks=chocotracks)
             else:
                 self.frac += 1
         self.walkframes += 1
