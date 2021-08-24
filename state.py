@@ -31,6 +31,8 @@ class State:
 
         self.walkframes = 0
 
+        self.zolom_timer = 0
+
     def vehicle_frac_reset(self):
         self.frac = -0x1e
 
@@ -127,14 +129,24 @@ class State:
         if enc != -1:
             raise Battle(enc, local2, local9)
 
-    def walk(self, region: int, ground_type: int, lr: bool, chocotracks: bool = False):
+    def zolom_tick(self):
+        if self.zolom_timer <= 0:
+            self.zolom_timer = (self.rng.rand() + 0x40) >> 2
+            self.rng.rand()
+        else:
+            self.zolom_timer -= 1
+
+    def walk(self, region: int, ground_type: int, lr: bool, movement: bool = True, zolombox: bool = False,
+             chocotracks: bool = False):
+        if zolombox:
+            self.zolom_tick()
         if lr:
             self.rng.rand()
         if ground_type == 0x10:
             ground_type = 0
         if ground_type == 0x18:
             ground_type = 8
-        if ground_type in GROUND_TYPES[region]:
+        if ground_type in GROUND_TYPES[region] and movement:
             if self.frac >= 0x10:
                 self.frac = 0
                 self.enc_check(enctable=EncTable(ENCOUNTER_DATA[region][GROUND_TYPES[region].index(ground_type)]),

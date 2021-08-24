@@ -30,11 +30,11 @@ def nextStep(s: State, menus: int):
             return n
 
 
-s = State(4*60*60 - 3*60 + 34) # put the igt you want to test in here
+s = State(4 * 60 * 60 - 4 * 60 + 36)
 
 # uncomment this if you hold left during fadein
-# for _ in range(13):
-#     s.rng.rand()
+for _ in range(13):
+    s.rng.rand()
 
 n = nextStep(copy.deepcopy(s), 0)
 if n is not None:
