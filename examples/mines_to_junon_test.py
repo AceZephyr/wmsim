@@ -13,8 +13,8 @@ def run(igt: int):
         for _ in range(140 + 17 + 17 + 17 + 1):
             s.walk(0x2, 0x0, True, zolombox=True)
 
-        for _ in range(1000):
-            s.walk(0x2, 0x0, True, zolombox=False)
+        for _ in range(10000):
+            s.walk(0x2, 0x0, True, zolombox=True)
 
         print("wtf")
     except Battle as b:
@@ -22,5 +22,5 @@ def run(igt: int):
         return b, s
 
 
-b, s = run(308 + 4)
+b, s = run(6446)
 print(s.walkframes, b.battle_id)

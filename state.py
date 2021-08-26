@@ -5,7 +5,7 @@ from wmrng import WorldMapRNG as RNG
 class Battle(Exception):
     def __init__(self, battle_id, local2, local9):
         self.battle_id = battle_id
-        self.local2 = local2
+        self.preempt = local2
         self.local9 = local9
 
 
@@ -138,10 +138,10 @@ class State:
 
     def walk(self, region: int, ground_type: int, lr: bool, movement: bool = True, zolombox: bool = False,
              chocotracks: bool = False):
-        if zolombox:
-            self.zolom_tick()
         if lr:
             self.rng.rand()
+        if zolombox:
+            self.zolom_tick()
         if ground_type == 0x10:
             ground_type = 0
         if ground_type == 0x18:
