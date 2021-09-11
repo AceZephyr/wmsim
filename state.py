@@ -43,7 +43,7 @@ class State:
     def preempt_128(self):
         return int((self.preemptval & 0x80) != 0)
 
-    def enc_check(self, enctable: EncTable, chocotracks: bool = False):
+    def enc_check(self, enctable: EncTable, chocotracks: bool = False, more_than_one_party_member: bool = True):
         enc = -1
         local2 = 0
         local9 = 0  # 1 if yuffie
@@ -82,7 +82,7 @@ class State:
                             if threshold > tmp:
                                 enc = enctable.special[1] & 0x3FF
 
-                    if enc < 0:  # still need to figure out the other condition here
+                    if more_than_one_party_member and enc < 0:
                         tmp = self.rng.rand() << 8
                         threshold = enctable.special[2]
                         if threshold > tmp:
@@ -137,7 +137,7 @@ class State:
             self.zolom_timer -= 1
 
     def walk(self, region: int, ground_type: int, lr: bool, movement: bool = True, zolombox: bool = False,
-             chocotracks: bool = False):
+             chocotracks: bool = False, more_than_one_party_member: bool = True):
         if lr:
             self.rng.rand()
         if zolombox:
@@ -150,7 +150,7 @@ class State:
             if self.frac >= 0x10:
                 self.frac = 0
                 self.enc_check(enctable=EncTable(ENCOUNTER_DATA[region][GROUND_TYPES[region].index(ground_type)]),
-                               chocotracks=chocotracks)
+                               chocotracks=chocotracks, more_than_one_party_member=more_than_one_party_member)
             else:
                 self.frac += 1
         self.walkframes += 1
