@@ -36,6 +36,9 @@ class State:
     def vehicle_frac_reset(self):
         self.frac = -0x1e
 
+    def lure_function(self):
+        return self.lureval * (int(self.lureval > 0x10) + 1)
+
     def preempt_function(self):
         tmp = self.preemptval & 0x7F
         return tmp * (int(tmp > 0x10) + 1)
@@ -47,7 +50,7 @@ class State:
         enc = -1
         local2 = 0
         local9 = 0  # 1 if yuffie
-        self.danger += (self.lureval << 0xA) // ((enctable.encrate >> 8) & 0xFF)
+        self.danger += (self.lure_function() << 0xA) // ((enctable.encrate >> 8) & 0xFF)
         if self.rng.rand() < (self.danger >> 8) and (enctable.encrate & 1):  # we got a battle
             if self.rng.rand() and False:  # yuffie check, assume it fails for now
                 pass

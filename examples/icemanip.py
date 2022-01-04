@@ -30,7 +30,7 @@ def nextStep(s: State, menus: int):
             return n
 
 
-s = State(4 * 60 * 60 - 4 * 60 + 36)
+s = State(3 * 60 * 60 + 35 * 60 + 22)
 
 # uncomment this if you hold left during fadein
 for _ in range(13):
