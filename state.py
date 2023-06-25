@@ -3,10 +3,11 @@ from wmrng import WorldMapRNG as RNG
 
 
 class Battle(Exception):
-    def __init__(self, battle_id, local2, local9):
+    def __init__(self, battle_id, local2, local9, yuffie=False):
         self.battle_id = battle_id
         self.preempt = local2
         self.local9 = local9
+        self.yuffie = yuffie
 
 
 class EncTable:
@@ -33,6 +34,8 @@ class State:
 
         self.zolom_timer = 0
 
+        self.encounter_checks = 0
+
     def vehicle_frac_reset(self):
         self.frac = -0x1e
 
@@ -46,14 +49,17 @@ class State:
     def preempt_128(self):
         return int((self.preemptval & 0x80) != 0)
 
-    def enc_check(self, enctable: EncTable, chocotracks: bool = False, more_than_one_party_member: bool = True):
+    def enc_check(self, enctable: EncTable, chocotracks: bool = False, more_than_one_party_member: bool = True,
+                  yuffie_chance: int = 0):
+        self.encounter_checks += 1
         enc = -1
         local2 = 0
         local9 = 0  # 1 if yuffie
         self.danger += (self.lure_function() << 0xA) // ((enctable.encrate >> 8) & 0xFF)
         if self.rng.rand() < (self.danger >> 8) and (enctable.encrate & 1):  # we got a battle
-            if self.rng.rand() and False:  # yuffie check, assume it fails for now
-                pass
+            yuffie_rand = self.rng.rand()
+            if yuffie_rand < yuffie_chance:  # yuffie check, assume it fails for now
+                raise Battle(-1, -1, -1, True)
             else:
                 if self.chocoval > 0 and chocotracks:
                     tmp = (self.rng.rand() << 0xC) / self.chocoval
@@ -140,7 +146,7 @@ class State:
             self.zolom_timer -= 1
 
     def walk(self, region: int, ground_type: int, lr: bool, movement: bool = True, zolombox: bool = False,
-             chocotracks: bool = False, more_than_one_party_member: bool = True):
+             chocotracks: bool = False, more_than_one_party_member: bool = True, yuffie_chance: int = 0):
         if lr:
             self.rng.rand()
         if zolombox:
@@ -153,7 +159,9 @@ class State:
             if self.frac >= 0x10:
                 self.frac = 0
                 self.enc_check(enctable=EncTable(ENCOUNTER_DATA[region][GROUND_TYPES[region].index(ground_type)]),
-                               chocotracks=chocotracks, more_than_one_party_member=more_than_one_party_member)
+                               chocotracks=chocotracks, more_than_one_party_member=more_than_one_party_member,
+                               yuffie_chance=yuffie_chance)
             else:
                 self.frac += 1
-        self.walkframes += 1
+        if movement:
+            self.walkframes += 1
