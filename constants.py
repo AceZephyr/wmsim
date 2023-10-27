@@ -1,21 +1,79 @@
+from enum import Enum
+
 GROUND_TYPES = [
-    [0, 9, 0, 17],
-    [0, 0, 0, 17],
-    [0, 9, 1, 17],
-    [0, 20, 0, 17],
-    [0, 9, 8, 17],
-    [0, 0, 25, 17],
-    [0, 9, 19, 17],
-    [0, 0, 1, 17],
-    [0, 0, 1, 17],
-    [0, 9, 14, 17],
-    [0, 9, 25, 17],
-    [0, 10, 9, 17],
-    [0, 9, 25, 17],
-    [0, 0, 8, 11],
-    [0, 0, 8, 0],#
-    [0, 0, 1, 0]
+    [0, 9, 0, 17],  #0:  Midgar
+    [0, 0, 0, 17],  #1:  Grasslands
+    [0, 9, 1, 17],  #2:  Junon
+    [0, 20, 0, 17], #3:  Corel
+    [0, 9, 8, 17],  #4:  Gold Saucer
+    [0, 0, 25, 17], #5:  Gongaga
+    [0, 9, 19, 17], #6:  Cosmo
+    [0, 0, 1, 17],  #7:  Nibel
+    [0, 0, 1, 17],  #8:  Rocket Launch Pad
+    [0, 9, 14, 17], #9:  Wutai
+    [0, 9, 25, 17], #10: Woodlands
+    [0, 10, 9, 17], #11: Icicle
+    [0, 9, 25, 17], #12: Mideel
+    [0, 0, 8, 11],  #13: North Corel
+    [0, 0, 8, 0],   #14: Cactus Island
+    [0, 0, 1, 0]    #15: Goblin Island
 ]
+
+# See https://ff7speedruns.com/index.php/World_Map_Encounter_Mechanics
+# This can be used as an index for GROUND_TYPES
+class REGION_IDS(Enum):
+    Midgar = 0
+    Grasslands = 1
+    Junon = 2
+    Corel = 3
+    Gold_Saucer = 4
+    Gongaga = 5
+    Cosmo = 6
+    Nibel = 7
+    Rocket_Launch_Pad = 8
+    Wutai = 9
+    Woodlands = 10
+    Icicle = 11
+    Mideel = 12
+    North_Corel = 13
+    Cactus_Island = 14
+    Goblin_Island = 15
+    Round_Island = 15 # Same as Goblin_Island
+
+# See https://ff7speedruns.com/index.php/World_Map_Encounter_Mechanics
+class GROUND_TYPE_IDS(Enum):
+    Grass = 0                         # Most things can go here.
+    Forest = 1                        # No landing here, but anything else goes.
+    Mountain = 2                      # Chocobos and flying machines only.
+    Sea = 3                           # Deep water, only gold chocobo and submarine can go here.
+    River_Crossing = 4                # Buggy, tiny bronco and water-capable chocobos.
+    River = 5                         # Tiny bronco and chocobos.
+    Water = 6                         # Shallow water, same as above.
+    Swamp = 7                         # Midgar zolom can only move in swamp areas.
+    Desert = 8                        # No landing.
+    Wasteland = 9                     # Found around Midgar, Wutai and misc other. No landing.
+    Snow = 10                         # Leaves footprints, no landing.
+    Riverside = 11                    # Beach-like area where river and land meet.
+    Cliff = 12                        # Sharp drop, usually where the player can be on either side.
+    Corel_Bridge = 13                 # Tiny bridge over the waterfall from Costa del Sol to Corel.
+    Wutai_Bridge = 14                 # Rickety rope bridges south of Wutai.
+    Unused_1 = 15                     # Doesn't seem to be used anywhere in the original data.
+    Hill_Side = 16                    # This is the tiny walkable part at the foot of a mountain.
+    Beach = 17                        # Where land and shallow water meets.
+    Sub_Pen = 18                      # Only place where you can enter/exit the submarine.
+    Canyon = 19                       # The ground in cosmo canyon has this type, walkability seems to be the same as wasteland.
+    Mountain_Pass = 20                # The small path through the mountains connecting Costa del Sol and Corel.
+    Unknown = 21                      # Present around bridges, may have some special meaning.
+    Waterfall = 22                    # River type where the tiny bronco can't go.
+    Unused_2 = 23                     # Doesn't seem to be used anywhere in the original data.
+    Gold_Saucer_Desert = 24           # Special desert type for the golden saucer.
+    Jungle = 25                       # Walkability same as forest, used in southern parts of the map.
+    Sea_2 = 26                        # Special type of deep water, only used in one small spot next to HP-MP cave, possibly related to the underwater map/submarine.
+    Northern_Cave = 27                # Inside part of the crater, where you can land the highwind.
+    Gold_Saucer_Desert_Border = 28    # Narrow strip of land surrounding the golden saucer desert. Probably related to the "quicksand" script.
+    Bridgehead = 29                   # Small area at both ends of every bridge. May have some special meaning.
+    Back_Entrance = 30                # Special type that can be set unwalkable from the script.
+    Unused_3: 31                      # Doesn't seem to be used anywhere in the original data.
 
 ENCOUNTER_DATA = [[[8193, 16422, 16423, 16424, 16425, 0, 0, 2090, 2090, 0, 4139, 0, 0, 0, 0, 0],
                    [5121, 16416, 16417, 16418, 16420, 0, 0, 4131, 4131, 10277, 0, 0, 0, 0, 0, 0],

@@ -1,30 +1,37 @@
-import time
+from utils import fromTimeFormat, toTimeFormat
+from constants import GROUND_TYPE_IDS, REGION_IDS
 
 from state import State, Battle
-
 
 def run(igt: int):
     s = State(igt)
 
     try:
-
-        # desert
+        # Drive down and up after leaving Gold Saucer
+        # Doesn't matter if you buffer the input or not
+        # Don't touch the desert edge
         for _ in range(10000):
-            s.walk(4, 24, False)
+            s.walk(REGION_IDS.Gold_Saucer.value, GROUND_TYPE_IDS.Gold_Saucer_Desert.value, False)
 
-        print("wtf")
+        # No encounter for this IGT and movement
+        return None, s
+
     except Battle as b:
-        # print(vars(b), vars(s), s.rng.idx)
         return b, s
 
 
+startTime = fromTimeFormat('2:26:00')
+windowSize = 2 * 60
+endTime = startTime + windowSize
+
+harpyId = 106
+bizHawkOffset = 4
+
 arr = []
-
-c = time.time()
-for x in range(10020, 10020 + 180):
-    b, s = run(x+6)
-    if b.battle_id == 107:
-        # arr.append((x, b, s))
+for x in range(startTime, endTime):
+    b, s = run(x + bizHawkOffset)
+    if b and b.battle_id == harpyId:
         arr.append(x)
+        print(toTimeFormat(x))
 
-print(arr)
+# print(arr)
