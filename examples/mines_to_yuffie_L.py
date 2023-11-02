@@ -1,16 +1,21 @@
-from utils import fromTimeFormat, toTimeFormat
+# For importing from parent directory (so this works in the examples folder)
+import os.path
+import sys
+directory = os.path.dirname(os.path.abspath("__file__"))
+sys.path.append(directory)
+
 from constants import GROUND_TYPE_IDS, REGION_IDS
-
 from state import State, Battle
+from utils import fromTimeFormat, toTimeFormat
 
-junon =     REGION_IDS.Junon.value
 
-grass =     GROUND_TYPE_IDS.Grass.value
-forest =    GROUND_TYPE_IDS.Forest.value
-hillSide =  GROUND_TYPE_IDS.Hill_Side.value
-
+junon =     REGION_IDS.Junon
+grass =     GROUND_TYPE_IDS.Grass
+forest =    GROUND_TYPE_IDS.Forest
+hillSide =  GROUND_TYPE_IDS.Hill_Side
 yuffieEncId = -1
 yuffieChance = 32   # 32/256 = 1/8 chance
+
 
 def run(igt: int):
     s = State(igt)

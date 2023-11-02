@@ -1,5 +1,3 @@
-from enum import Enum
-
 GROUND_TYPES = [
     [0, 9, 0, 17],  #0:  Midgar
     [0, 0, 0, 17],  #1:  Grasslands
@@ -21,7 +19,7 @@ GROUND_TYPES = [
 
 # See https://ff7speedruns.com/index.php/World_Map_Encounter_Mechanics
 # This can be used as an index for GROUND_TYPES
-class REGION_IDS(Enum):
+class REGION_IDS():
     Midgar = 0
     Grasslands = 1
     Junon = 2
@@ -41,7 +39,7 @@ class REGION_IDS(Enum):
     Round_Island = 15 # Same as Goblin_Island
 
 # See https://ff7speedruns.com/index.php/World_Map_Encounter_Mechanics
-class GROUND_TYPE_IDS(Enum):
+class GROUND_TYPE_IDS():
     Grass = 0                         # Most things can go here.
     Forest = 1                        # No landing here, but anything else goes.
     Mountain = 2                      # Chocobos and flying machines only.

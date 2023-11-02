@@ -1,7 +1,13 @@
-from utils import fromTimeFormat, toTimeFormat
-from constants import GROUND_TYPE_IDS, REGION_IDS
+# For importing from parent directory (so this works in the examples folder)
+import os.path
+import sys
+directory = os.path.dirname(os.path.abspath("__file__"))
+sys.path.append(directory)
 
+from constants import GROUND_TYPE_IDS, REGION_IDS
 from state import State, Battle
+from utils import fromTimeFormat, toTimeFormat
+
 
 def run(igt: int):
     s = State(igt)
@@ -11,7 +17,7 @@ def run(igt: int):
         # Doesn't matter if you buffer the input or not
         # Don't touch the desert edge
         for _ in range(10000):
-            s.walk(REGION_IDS.Gold_Saucer.value, GROUND_TYPE_IDS.Gold_Saucer_Desert.value, False)
+            s.walk(REGION_IDS.Gold_Saucer, GROUND_TYPE_IDS.Gold_Saucer_Desert, False)
 
         # No encounter for this IGT and movement
         return None, s
