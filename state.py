@@ -150,8 +150,8 @@ class State:
         """
         Simulates one frame of world map presence
         Params:
-        -region:                        Region being moved over (index for GROUND_TYPES). e.g. REGION_IDS.Gongaga.value = 5
-        -ground_type:                   Ground type ID. e.g. GROUND_TYPE_IDS.Jungle.value = 25
+        -region:                        Region being moved over (index for GROUND_TYPES). e.g. REGION_IDS.Gongaga = 5
+        -ground_type:                   Ground type ID. e.g. GROUND_TYPE_IDS.Jungle = 25
         -lr:                            Left, Right, L1, or R1 is being held
         -movement:                      You are moving/advancing fractions. False for buffered movement while loading wm (default true)
         -zolombox:                      Midgar Zolom is loaded at this position (default false)
