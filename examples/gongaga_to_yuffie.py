@@ -36,14 +36,12 @@ def run(igt: int):
         return b, s
 
 startTime = fromTimeFormat('2:26:00')
-windowSize = 10 * 60
+windowSize = 2 * 60
 endTime = startTime + windowSize
 
-arr = []
-for x in range(startTime, endTime):
-    b, s = run(x+4) # Use x+4 for bizhawk offset from menu close
-    if b and b.battle_id == yuffieEncId:
-        arr.append(x)
-        print(toTimeFormat(x))
+bizhawkOffset = 4
 
-#print(arr)
+for igt in range(startTime, endTime):
+    b, s = run(igt + bizhawkOffset)
+    if b and b.battle_id == yuffieEncId:
+        print(toTimeFormat(igt))
