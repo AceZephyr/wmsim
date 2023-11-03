@@ -60,11 +60,7 @@ endTime = startTime + windowSize
 
 bizHawkOffset = 4
 
-arr = []
-for x in range(startTime, endTime):
-    b, s = run(x + bizHawkOffset)
+for igt in range(startTime, endTime):
+    b, s = run(igt + bizHawkOffset)
     if b and b.battle_id == yuffieEncId:
-        arr.append(x)
-        print(toTimeFormat(x))
-
-#print(arr)
+        print(toTimeFormat(igt))

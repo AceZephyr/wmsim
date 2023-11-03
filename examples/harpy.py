@@ -17,14 +17,13 @@ def run(igt: int):
         # Doesn't matter if you buffer the input or not
         # Don't touch the desert edge
         for _ in range(10000):
-            s.walk(REGION_IDS.Gold_Saucer, GROUND_TYPE_IDS.Gold_Saucer_Desert, False)
+            s.walk(REGION_IDS.Gold_Saucer, GROUND_TYPE_IDS.Gold_Saucer_Desert, lr=False)
 
         # No encounter for this IGT and movement
         return None, s
 
     except Battle as b:
         return b, s
-
 
 startTime = fromTimeFormat('2:26:00')
 windowSize = 2 * 60
@@ -33,11 +32,7 @@ endTime = startTime + windowSize
 harpyId = 106
 bizHawkOffset = 4
 
-arr = []
-for x in range(startTime, endTime):
-    b, s = run(x + bizHawkOffset)
+for igt in range(startTime, endTime):
+    b, s = run(igt + bizHawkOffset)
     if b and b.battle_id == harpyId:
-        arr.append(x)
-        print(toTimeFormat(x))
-
-# print(arr)
+        print(toTimeFormat(igt))
