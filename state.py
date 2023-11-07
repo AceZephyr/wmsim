@@ -147,6 +147,18 @@ class State:
 
     def walk(self, region: int, ground_type: int, lr: bool, movement: bool = True, zolombox: bool = False,
              chocotracks: bool = False, more_than_one_party_member: bool = True, yuffie_chance: int = 0):
+        """
+        Simulates one frame of world map presence
+        Params:
+        -region:                        Region being moved over (index for GROUND_TYPES). e.g. REGION_IDS.Gongaga = 5
+        -ground_type:                   Ground type ID. e.g. GROUND_TYPE_IDS.Jungle = 25
+        -lr:                            Left, Right, L1, or R1 is being held
+        -movement:                      You are moving/advancing fractions. False for buffered movement while loading wm (default true)
+        -zolombox:                      Midgar Zolom is loaded at this position (default false)
+        -chocotracks:                   Current position is chocobo tracks (default false)
+        -more_than_one_party_member:    Party has 2-3 members (default true)
+        -yuffie_chance:                 Chance out of 256 (default 0)
+        """
         if lr:
             self.rng.rand()
         if zolombox:

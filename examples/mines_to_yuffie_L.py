@@ -1,0 +1,66 @@
+# For importing from parent directory (so this works in the examples folder)
+import os.path
+import sys
+directory = os.path.dirname(os.path.abspath("__file__"))
+sys.path.append(directory)
+
+from constants import GROUND_TYPE_IDS, REGION_IDS
+from state import State, Battle
+from utils import fromTimeFormat, toTimeFormat
+
+
+junon =     REGION_IDS.Junon
+grass =     GROUND_TYPE_IDS.Grass
+forest =    GROUND_TYPE_IDS.Forest
+hillSide =  GROUND_TYPE_IDS.Hill_Side
+yuffieEncId = -1
+yuffieChance = 32   # 32/256 = 1/8 chance
+
+
+def run(igt: int):
+    s = State(igt)
+
+    # Zolom ticks once before you start moving
+    s.zolom_tick()
+
+    # Hold Left coming out of the mines - Zolombox
+    for _ in range(13):
+        s.walk(junon, grass, lr=True, movement=False, zolombox=True)
+
+    try:
+        # Grass - Zolombox
+        for _ in range(60):
+            s.walk(junon, grass, lr=True, zolombox=True)
+
+        # Mountain - Zolombox
+        for _ in range(23):
+            s.walk(junon, hillSide, lr=True, zolombox=True)
+
+        # Grass - Zolombox
+        for _ in range(108):
+            s.walk(junon, grass, lr=True, zolombox=True)
+            
+        # Grass - No Zolombox
+        for _ in range(52):
+            s.walk(junon, grass, lr=True, zolombox=False)
+
+        # Forest - No Zolombox
+        for _ in range(1000): # 60 frames running across forest. Run left and right after entering forest
+            s.walk(junon, forest, lr=True, zolombox=False, yuffie_chance=yuffieChance)
+
+        # No encounter for this IGT and movement
+        return None, s
+
+    except Battle as b:
+        return b, s
+
+startTime = fromTimeFormat('2:27:22')
+windowSize = 3 * 60
+endTime = startTime + windowSize
+
+bizHawkOffset = 4
+
+for igt in range(startTime, endTime):
+    b, s = run(igt + bizHawkOffset)
+    if b and b.battle_id == yuffieEncId:
+        print(toTimeFormat(igt))
