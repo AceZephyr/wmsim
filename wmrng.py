@@ -1,85 +1,41 @@
-def _scramble_rng(rng: list):
-    a0 = 0
-    while a0 < 0x20:
-        v0 = rng[a0]
-        v1 = rng[a0 + 489]
-        v0 = v0 ^ v1
-        rng[a0] = v0
-        a0 += 1
-    a0 = 0x20
-    a1 = 0
-    while a0 < 0x209:
-        v0 = rng[a1]
-        v1 = rng[a0]
-        v0 = v0 ^ v1
-        rng[a0] = v0
-        a0 += 1
-        a1 += 1
-    return rng
-
-
-def _seed_rng(igt: int):
-    stack = []
-    rng = []
-
-    a0 = igt
-
-    a3 = 0
-
-    t0 = 0x5D588B65
-    t1 = 0x80000000
-    while len(stack) < 17:  # outer loop
-        a1 = 31
-        while a1 >= 0:  # inner loop
-            a1 -= 1
-            a0 = ((a0 * t0) + 1) % 2 ** 32
-            v1 = a3 >> 1
-            v0 = a0 & t1
-            a3 = v1 | v0
-        stack.append(a3)
-    v0 = stack[-1]
-    v1 = stack[0]
-    a0 = stack[-2]
-    v0 = (v0 << 0x17) % 2 ** 32
-    v1 = v1 >> 9
-    v0 = v0 ^ v1
-    v0 = v0 ^ a0
-    stack[-1] = v0
-    a2 = 0x11
-    a1 = 0
-    while a2 < 0x209:
-        a2 += 1
-        v0 = stack[a1]
-        v1 = stack[a1 + 1]
-        a0 = stack[a1 + 16]
-        v0 = (v0 << 0x17) % 2 ** 32
-        v1 = v1 >> 9
-        v0 = v0 ^ v1
-        v0 = v0 ^ a0
-        stack.append(v0)
-        a1 += 1
-    a2 = 0
-    v1 = 0  # index
-    while a2 < 0x209:
-        v0 = stack[v1] % 2 ** 8
-        rng.append(v0)
-        a2 += 1
-        v1 += 1
-    rng = _scramble_rng(rng)
-    rng = _scramble_rng(rng)
-    rng = _scramble_rng(rng)
-    return rng
-
+# Used ergonomy_joe's decompliation for a significantly more clean implementation.
+# Tested rigorouisly against the old implementation (see wmrng_old.py)
 
 class WorldMapRNG:
+    def shuffle(self):
+        for i in range(0x20):
+            self.rng[i] ^= self.rng[i + 0x1e9]
+        for i in range(0x20, 0x209):
+            self.rng[i] ^= self.rng[i - 0x20]
+
+    def srand(self, seed: int):
+        buf = [0 for _ in range(521)]
+        k = 0
+        for i in range(0x11):
+            for _ in range(0x20):
+                seed = (seed * 0x5D588B65 + 1) & 0xFFFFFFFF
+                k = (k >> 1) | (seed & 0x80000000)
+            buf[i] = k & 0xFFFFFFFF
+        buf[0x10] = ((buf[0x10] << 0x17) ^ (buf[0] >> 9) ^ buf[0xF]) & 0xFFFFFFFF
+        for i in range(0x11, 0x209):
+            buf[i] = ((buf[i - 0x11] << 0x17) ^ (buf[i - 0x10] >> 9) ^ buf[i - 1]) & 0xFFFFFFFF
+        self.rng = [x & 0xFF for x in buf]
+        self.shuffle()
+        self.shuffle()
+        self.shuffle()
+        self.idx = 0x208
 
     def rand(self):
         self.idx += 1
+        self.calls += 1
         if self.idx >= 521:
-            self.rng = _scramble_rng(self.rng)
+            self.shuffle()
             self.idx = 0
         return self.rng[self.idx]
 
     def __init__(self, igt: int):
-        self.rng = _seed_rng(igt)
-        self.idx = 520
+        self.rng = None
+        self.idx = 0
+        self.calls = 0
+
+        self.srand(igt)

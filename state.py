@@ -22,7 +22,6 @@ class EncTable:
 class State:
     def __init__(self, igt: int):
         self.rng = RNG(igt)
-        # print(" ".join([hex(x)[2:].upper() for x in self.rng.rng]))
         self.frac = -0x8c
         self.danger = 0
         self.lureval = 0x10
@@ -35,6 +34,8 @@ class State:
         self.zolom_timer = 0
 
         self.encounter_checks = 0
+
+        self.movement_frames = 0
 
     def vehicle_frac_reset(self):
         self.frac = -0x1e
