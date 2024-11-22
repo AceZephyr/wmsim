@@ -6,8 +6,8 @@ from util import format_igt
 # Chocobo from Chocobo Farm with menus
 
 FILENAME = "choco_ranch.txt"
-START_IGT = 1 * 60 * 60 + 32 * 60
-END_IGT = 1 * 60 * 60 + 33 * 60
+START_IGT = 1 * 60 * 60 + 30 * 60
+END_IGT = 1 * 60 * 60 + 40 * 60
 
 # 0 for pc, 3 for psx
 LOADING_OFFSET = 3
@@ -64,8 +64,8 @@ def run_second(igt: int):
 
 def main():
     arr = []
-    for igt in range(START_IGT, END_IGT):
-        rs = run_second(igt + LOADING_OFFSET)
+    for igt in range(START_IGT + LOADING_OFFSET, END_IGT + LOADING_OFFSET):
+        rs = run_second(igt)
         if rs is not None:
             arr.append([igt, rs[0], rs[1], rs[2], rs[4], "Preempt" if rs[3] else ""])
     with open(FILENAME, 'w') as f:
