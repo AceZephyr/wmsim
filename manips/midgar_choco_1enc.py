@@ -3,13 +3,13 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import tabulate
 
 from state import State, Battle
-from util import format_igt
+from util import format_igt, HOURS, MINUTES
 
 MAX_WORKERS = 8
 FILENAME = "midgar_choco_1enc.txt"
 
-START_IGT = 1 * 60 * 60 + 20 * 60
-END_IGT = 1 * 60 * 60 + 30 * 60
+START_IGT = 1 * HOURS + 20 * MINUTES
+END_IGT = 1 * HOURS + 30 * MINUTES
 MAXMENUS = 5
 
 # 0 for PC, 3 for psx

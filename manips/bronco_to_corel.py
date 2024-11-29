@@ -3,12 +3,12 @@ from copy import deepcopy
 import tabulate
 
 from state import State, Battle
-from util import format_igt
+from util import format_igt, HOURS, MINUTES
 
 # Tiny Bronco initial spawn from Palmer fight -> Corel 0-encounters with menus
 
-START_IGT = 2 * 60 * 60 + 40 * 60
-END_IGT = 3 * 60 * 60 + 00 * 60
+START_IGT = 2 * HOURS + 40 * MINUTES
+END_IGT = 3 * HOURS + 00 * MINUTES
 FILENAME = "bronco_to_corel.txt"
 
 LOADING_TIME = 3

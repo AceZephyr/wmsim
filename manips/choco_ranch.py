@@ -1,13 +1,13 @@
-from state import State, Battle
 import tabulate
 
-from util import format_igt
+from state import State, Battle
+from util import format_igt, HOURS, MINUTES
 
 # Chocobo from Chocobo Farm with menus
 
 FILENAME = "choco_ranch.txt"
-START_IGT = 1 * 60 * 60 + 30 * 60
-END_IGT = 1 * 60 * 60 + 40 * 60
+START_IGT = 1 * HOURS + 30 * MINUTES
+END_IGT = 1 * HOURS + 40 * MINUTES
 
 # 0 for pc, 3 for psx
 LOADING_OFFSET = 3

@@ -4,13 +4,13 @@ from copy import deepcopy
 import tabulate
 
 from state import State, Battle
-from util import format_igt
+from util import format_igt, HOURS, MINUTES
 
 # CotA -> Icicle Inn 0-encounters
 
 MAX_WORKERS = 8
-START_IGT = 1 * 3600 + 50 * 60
-END_IGT = 2 * 3600 + 50 * 60
+START_IGT = 1 * HOURS + 50 * MINUTES
+END_IGT = 2 * HOURS + 50 * MINUTES
 
 FILENAME = "icicle-inn-armswings.txt"
 

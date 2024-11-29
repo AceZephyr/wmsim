@@ -3,12 +3,12 @@ from copy import deepcopy
 import tabulate
 
 from state import State, Battle
-from util import format_igt
+from util import format_igt, HOURS, MINUTES
 
 # Corel -> Tiny Bronco 0-encounter with menus
 
-START_IGT = 2 * 60 * 60 + 40 * 60
-END_IGT = 2 * 60 * 60 + 55 * 60
+START_IGT = 2 * HOURS + 40 * MINUTES
+END_IGT = 2 * HOURS + 55 * MINUTES
 FILENAME = "corel_to_bronco.txt"
 
 MAX_MENUS = 2

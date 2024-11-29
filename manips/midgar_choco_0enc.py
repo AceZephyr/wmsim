@@ -4,13 +4,13 @@ from copy import deepcopy
 import tabulate
 
 from state import State, Battle
-from util import format_igt
+from util import format_igt, HOURS, MINUTES
 
 # Midgar -> Chocobo Ranch 0-encounter with menus
 
 FILENAME = "midgar_choco_0enc.txt"
-START_IGT = 1 * 60 * 60 + 28 * 60 + 00
-END_IGT = 1 * 60 * 60 + 29 * 60 + 00
+START_IGT = 1 * HOURS + 28 * MINUTES
+END_IGT = 1 * HOURS + 29 * MINUTES
 MAX_WORKERS = 8
 
 # 0 for PC, 3 for psx

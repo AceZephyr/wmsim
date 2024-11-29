@@ -1,13 +1,13 @@
 import tabulate
 
 from state import State, Battle
-from util import format_igt
+from util import format_igt, HOURS, MINUTES
 
 # Beachplug manip: CC skip alignment, exit buggy, down -> down-right. Includes pruning.
 # Developed by DashRetro, edited by AceZephyr
 
-START_IGT = 2 * 3600 + 55 * 60
-END_IGT = 3 * 3600 + 10 * 60
+START_IGT = 2 * HOURS + 55 * MINUTES
+END_IGT = 3 * HOURS + 10 * MINUTES
 FILENAME = "beachplugs.txt"
 LOADING_TIME = 5
 MAX_MENUS = 3

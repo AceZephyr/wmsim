@@ -2,13 +2,13 @@ from copy import deepcopy
 
 from state import State, Battle
 from wmrng import WorldMapRNG
-from util import format_igt
+from util import format_igt, HOURS, MINUTES
 
 # Disc 1 Skip (from Kalm. https://youtu.be/WYXqVmjhZco)
 
 FILENAME = "d1s.txt"
-START_IGT = 1 * 3600 + 30 * 60
-END_IGT = 2 * 3600 + 30 * 60
+START_IGT = 1 * HOURS + 30 * MINUTES
+END_IGT = 2 * HOURS + 30 * MINUTES
 
 INITIAL_RNG = 1439
 

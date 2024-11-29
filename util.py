@@ -1,3 +1,7 @@
+# Semantic constants
+HOURS = 3600
+MINUTES = 60
+
 def format_igt(i):
     parts = []
     while i > 0:

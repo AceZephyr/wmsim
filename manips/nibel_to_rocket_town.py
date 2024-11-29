@@ -1,15 +1,15 @@
 import tabulate
 
 from state import State, Battle
-from util import format_igt
+from util import format_igt, HOURS, MINUTES
 
 REGION = 0x8
 GROUND_TYPE = 0x0
 END_DANGER = 22 * 512
 
 FILENAME = "nibel_to_rocket_town.txt"
-START_IGT = 2 * 60 * 60 + 30 * 60
-END_IGT = 3 * 60 * 60 + 00 * 60
+START_IGT = 2 * HOURS + 30 * MINUTES
+END_IGT = 3 * HOURS + 00 * MINUTES
 
 # 3 on PSX, 0 on PC
 LOADING_TIME = 3
