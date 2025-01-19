@@ -2,8 +2,9 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import tabulate
 
+from constants import MINUTES, HOURS, Region, Ground
 from state import State, Battle
-from util import format_igt, HOURS, MINUTES
+from util import format_igt
 
 MAX_WORKERS = 8
 FILENAME = "midgar_choco_1enc.txt"
@@ -27,17 +28,17 @@ FRAMES_TO_CHOCO_FARM_REGION = 755
 def run_left_menu(state: State, left_frames: int, menus: int):
     try:
         for _ in range(left_frames):
-            state.walk(0x0, 0x9, True, zolombox=False, movement=True)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=False, movement=True)
         for _ in range(menus):
-            state.walk(0x0, 0x9, True, zolombox=False, movement=False)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=False, movement=False)
         for _ in range(FRAMES_TO_ZOLOM_BOX + left_frames - menus):
-            state.walk(0x0, 0x9, True, zolombox=False)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=False)
         for _ in range(FRAMES_IN_GRAY - FRAMES_TO_ZOLOM_BOX):
-            state.walk(0x0, 0x9, True, zolombox=True)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=True)
         for _ in range(FRAMES_TO_CHOCO_FARM_REGION - FRAMES_IN_GRAY):
-            state.walk(0x0, 0x0, True, zolombox=True)
+            state.walk(Region.Midgar, Ground.Grass, True, zolombox=True)
         while True:
-            state.walk(0x1, 0x0, True, zolombox=True)
+            state.walk(Region.Grasslands, Ground.Grass, True, zolombox=True)
 
     except Battle as battle:
         return battle, state
@@ -46,17 +47,17 @@ def run_left_menu(state: State, left_frames: int, menus: int):
 def run_left_down(state: State, left_frames: int, down_frames: int):
     try:
         for _ in range(left_frames):
-            state.walk(0x0, 0x9, True, zolombox=False, movement=True)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=False, movement=True)
         for _ in range(down_frames):
-            state.walk(0x0, 0x9, False, zolombox=False, movement=True)
+            state.walk(Region.Midgar, Ground.Wasteland, False, zolombox=False, movement=True)
         for _ in range(FRAMES_TO_ZOLOM_BOX + left_frames):
-            state.walk(0x0, 0x9, True, zolombox=False)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=False)
         for _ in range(FRAMES_IN_GRAY - FRAMES_TO_ZOLOM_BOX):
-            state.walk(0x0, 0x9, True, zolombox=True)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=True)
         for _ in range(FRAMES_TO_CHOCO_FARM_REGION - FRAMES_IN_GRAY):
-            state.walk(0x0, 0x0, True, zolombox=True)
+            state.walk(Region.Midgar, Ground.Grass, True, zolombox=True)
         while True:
-            state.walk(0x1, 0x0, True, zolombox=True)
+            state.walk(Region.Grasslands, Ground.Grass, True, zolombox=True)
 
     except Battle as battle:
         return battle, state

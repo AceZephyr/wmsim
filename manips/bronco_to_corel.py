@@ -2,8 +2,9 @@ from copy import deepcopy
 
 import tabulate
 
+from constants import MINUTES, HOURS
 from state import State, Battle
-from util import format_igt, HOURS, MINUTES
+from util import format_igt
 
 # Tiny Bronco initial spawn from Palmer fight -> Corel 0-encounters with menus
 

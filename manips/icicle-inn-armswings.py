@@ -3,8 +3,9 @@ from copy import deepcopy
 
 import tabulate
 
+from constants import MINUTES, HOURS, Ground, Region
 from state import State, Battle
-from util import format_igt, HOURS, MINUTES
+from util import format_igt
 
 # CotA -> Icicle Inn 0-encounters
 
@@ -17,8 +18,8 @@ FILENAME = "icicle-inn-armswings.txt"
 LOADING_TIME = 3
 MAX_MENUS = 4
 
-REGION = 0xB
-GROUND = 0xA
+REGION = Region.Icicle
+GROUND = Ground.Snow
 FRAMES_OF_MOVEMENT_TO_END = 880
 
 START_CONDITIONS = list(range(-7, 7 + 1))

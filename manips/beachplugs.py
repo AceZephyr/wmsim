@@ -1,7 +1,8 @@
 import tabulate
 
+from constants import MINUTES, HOURS, Ground, Region
 from state import State, Battle
-from util import format_igt, HOURS, MINUTES
+from util import format_igt
 
 # Beachplug manip: CC skip alignment, exit buggy, down -> down-right. Includes pruning.
 # Developed by DashRetro, edited by AceZephyr
@@ -12,9 +13,9 @@ FILENAME = "beachplugs.txt"
 LOADING_TIME = 5
 MAX_MENUS = 3
 
-REGION = 4
+REGION = Region.Gold_Saucer
 GROUND_FRAMES = [28, 26, 29, 27, 30, 25, 31, 25, 31, 25, 30, 27, 30, 25, 31, 25, 31, 25, 33]
-GROUND_TYPES = [17, 0]
+GROUND_TYPES = [Ground.Beach, Ground.Grass]
 
 
 def run(igt, menus):

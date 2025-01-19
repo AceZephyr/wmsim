@@ -2,8 +2,9 @@ from copy import deepcopy
 
 import tabulate
 
+from constants import MINUTES, HOURS
 from state import State, Battle
-from util import format_igt, HOURS, MINUTES
+from util import format_igt
 
 # Corel -> Tiny Bronco 0-encounter with menus
 

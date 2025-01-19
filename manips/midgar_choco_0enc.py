@@ -3,14 +3,15 @@ from copy import deepcopy
 
 import tabulate
 
+from constants import MINUTES, HOURS, Region, Ground
 from state import State, Battle
-from util import format_igt, HOURS, MINUTES
+from util import format_igt
 
 # Midgar -> Chocobo Ranch 0-encounter with menus
 
 FILENAME = "midgar_choco_0enc.txt"
 START_IGT = 1 * HOURS + 28 * MINUTES
-END_IGT = 1 * HOURS + 29 * MINUTES
+END_IGT = 1 * HOURS + 35 * MINUTES
 MAX_WORKERS = 8
 
 # 0 for PC, 3 for psx
@@ -32,16 +33,16 @@ def start(state: State, left_frames: int, adj: int):
         elif adj > 0:
             menus = abs(adj)
         for _ in range(left_frames):
-            state.walk(0x0, 0x9, True, zolombox=False, movement=True)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=False, movement=True)
 
         for _ in range(down_frames):
-            state.walk(0x0, 0x9, False, zolombox=False, movement=True)
+            state.walk(Region.Midgar, Ground.Wasteland, False, zolombox=False, movement=True)
         for _ in range(menus):
-            state.walk(0x0, 0x9, True, zolombox=False, movement=False)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=False, movement=False)
         for _ in range(FRAMES_TO_ZOLOM_BOX + left_frames - menus):
-            state.walk(0x0, 0x9, True, zolombox=False)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=False)
         for _ in range(FRAMES_IN_GRAY - FRAMES_TO_ZOLOM_BOX):
-            state.walk(0x0, 0x9, True, zolombox=True)
+            state.walk(Region.Midgar, Ground.Wasteland, True, zolombox=True)
     except Battle:
         return None
 
@@ -59,7 +60,7 @@ def start(state: State, left_frames: int, adj: int):
             while position_frame < FRAMES_TOTAL:
                 current_zolom_timer = current_state.zolom_timer
                 current_frac = current_state.frac
-                current_state.walk(0x0, 0x0, True, zolombox=True)
+                current_state.walk(Region.Midgar, Ground.Grass, True, zolombox=True)
                 position_frame += 1
                 if menu_cooldown > 0:
                     menu_cooldown -= 1
@@ -72,9 +73,9 @@ def start(state: State, left_frames: int, adj: int):
                     continue
                 rngi = current_state.rng.idx
                 new_state = deepcopy(current_state)
-                new_state.walk(0x0, 0x0, True, zolombox=True, movement=False)
+                new_state.walk(Region.Midgar, Ground.Grass, True, zolombox=True, movement=False)
                 for _ in range(19):  # menu fadeout
-                    new_state.walk(0x0, 0x0, False, zolombox=True, movement=False)
+                    new_state.walk(Region.Midgar, Ground.Grass, False, zolombox=True, movement=False)
                 state_stack.append((
                     new_state,
                     menu_frames_tuple + (position_frame,),

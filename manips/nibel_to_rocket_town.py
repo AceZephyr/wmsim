@@ -1,10 +1,11 @@
 import tabulate
 
+from constants import MINUTES, HOURS, Region, Ground
 from state import State, Battle
-from util import format_igt, HOURS, MINUTES
+from util import format_igt
 
-REGION = 0x8
-GROUND_TYPE = 0x0
+REGION = Region.Rocket_Launch_Pad
+GROUND_TYPE = Ground.Grass
 END_DANGER = 22 * 512
 
 FILENAME = "nibel_to_rocket_town.txt"

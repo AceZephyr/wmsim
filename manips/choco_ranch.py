@@ -1,7 +1,8 @@
 import tabulate
 
+from constants import MINUTES, HOURS, Region, Ground
 from state import State, Battle
-from util import format_igt, HOURS, MINUTES
+from util import format_igt
 
 # Chocobo from Chocobo Farm with menus
 
@@ -24,8 +25,8 @@ MENU_FRAMES = {
 }
 CHOCOVAL = 8
 
-REGION = 0x1
-GROUND = 0x0
+REGION = Region.Grasslands
+GROUND = Ground.Grass
 
 
 def run(igt: int, menu_on_frame):

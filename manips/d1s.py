@@ -1,8 +1,9 @@
 from copy import deepcopy
 
+from constants import MINUTES, HOURS
 from state import State, Battle
 from wmrng import WorldMapRNG
-from util import format_igt, HOURS, MINUTES
+from util import format_igt
 
 # Disc 1 Skip (from Kalm. https://youtu.be/WYXqVmjhZco)
 

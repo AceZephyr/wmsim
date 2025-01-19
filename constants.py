@@ -1,3 +1,45 @@
+# Semantic constants
+HOURS = 3600
+MINUTES = 60
+
+class Region:
+    Midgar = 0
+    Grasslands = 1
+    Junon = 2
+    Corel = 3
+    Gold_Saucer = 4
+    Gongaga = 5
+    Cosmo = 6
+    Nibel = 7
+    Rocket_Launch_Pad = 8
+    Wutai = 9
+    Woodlands = 10
+    Icicle = 11
+    Mideel = 12
+    North_Corel = 13
+    Cactus_Island = 14
+    Goblin_Island = 15
+    Round_Island = 15
+
+
+# from https://wiki.ffrtt.ru/index.php/FF7/WorldMap_Module
+class Ground:
+    Grass = 0
+    Forest = 1
+    Desert = 8
+    Wasteland = 9
+    Snow = 10
+    Riverside = 11
+    Wutai_Bridge = 14
+    Hill_Side = 16  # Functions identically to Grass
+    Beach = 17
+    Canyon = 19
+    Mountain_Pass = 20
+    Gold_Saucer_Desert = 24  # Functions identically to Desert
+    Jungle = 25
+    Default = -1
+
+
 GROUND_TYPES = [
     [0, 9, 0, 17],
     [0, 0, 0, 17],
