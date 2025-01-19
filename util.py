@@ -1,6 +1,3 @@
-
-
-
 def format_igt(i):
     parts = []
     while i > 0:
