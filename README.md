@@ -16,8 +16,8 @@ which can be caught to determine when a battle takes place and what battle it is
 from constants import *
 from state import State, Battle
 
-# Seed the world map at 3:14:15
-s = State(3 * HOURS + 14 * MINUTES + 15, zolombox_init=True)
+# Seed the world map at 6:28:31
+s = State(6 * HOURS + 28 * MINUTES + 31, zolombox_init=True)
 s.chocoval = 8
 
 try:
@@ -26,6 +26,11 @@ try:
 except Battle as b:
     print(b.battle_id)
 ```
+
+> 56
+
+A formation table, such as https://finalfantasy.fandom.com/wiki/Final_Fantasy_VII_enemy_formations can be used to find
+desired formation IDs
 
 # Known Limitations and Quirks
 
