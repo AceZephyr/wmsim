@@ -3,11 +3,20 @@ from wmrng import WorldMapRNG as RNG
 
 
 class Battle(Exception):
-    def __init__(self, battle_id, local2, local9, yuffie=False):
+    """
+    Describes a random battle that occurs on the World Map. Thrown by State.walk.
+
+    :var battle_id: Battle ID. If this is a Mystery Ninja battle, this will be -1.
+    :var preempt: Boolean. If true, this battle is flagged as preemptive. Note that a battle with a non-preemptable flag may still be flagged as preemptive, in which case the battle will not actually be preemptive.
+    :var chocobo: Boolean. If true, this is a battle against a Chocobo that can be caught.
+    :var yuffie: Boolean. If true, this is a battle against the Mystery Ninja.
+    """
+
+    def __init__(self, battle_id, preempt, yuffie=False, chocobo=False):
         self.battle_id = battle_id
-        self.preempt = local2
-        self.local9 = local9
+        self.preempt = preempt
         self.yuffie = yuffie
+        self.chocobo = chocobo
 
 
 class EncTable:
@@ -20,6 +29,10 @@ class EncTable:
 
 
 class State:
+    """
+    Describes the state of the world map and all data needed to maintain that state. Use walk() to perform simulations.
+    """
+
     def __init__(self, igt: int):
         self.rng = RNG(igt)
         self.frac = -0x8c
@@ -54,13 +67,13 @@ class State:
                   yuffie_chance: int = 0):
         self.encounter_checks += 1
         enc = -1
-        local2 = 0
-        local9 = 0  # 1 if yuffie
+        is_preempt = 0
+        is_chocobo_battle = False
         self.danger += (self.lure_function() << 0xA) // ((enctable.encrate >> 8) & 0xFF)
         if self.rng.rand() < (self.danger >> 8) and (enctable.encrate & 1):  # we got a battle
             yuffie_rand = self.rng.rand()
-            if yuffie_rand < yuffie_chance:  # yuffie check, assume it fails for now
-                raise Battle(-1, -1, -1, True)
+            if yuffie_rand < yuffie_chance:
+                raise Battle(battle_id=-1, preempt=False, yuffie=True, chocobo=False)
             else:
                 if self.chocoval > 0 and chocotracks:
                     tmp = (self.rng.rand() << 0xC) / self.chocoval
@@ -79,9 +92,11 @@ class State:
                                 threshold += enctable.alt[3]
                                 if threshold > tmp:
                                     enc = enctable.alt[3] & 0x3FF
+                    if enc >= 0:
+                        is_chocobo_battle = True
 
-                local2 = self.rng.rand() < self.preempt_function()
-                if not local2:  # special encs check
+                is_preempt = self.rng.rand() < self.preempt_function()
+                if not is_preempt:  # special encs check
                     if enc < 0:
                         tmp = self.rng.rand() << (self.preempt_128() + 8)
                         threshold = enctable.special[0]
@@ -137,7 +152,7 @@ class State:
                             break
                         checks += 1
         if enc != -1:
-            raise Battle(enc, local2, local9)
+            raise Battle(enc, preempt=is_preempt, yuffie=False, chocobo=is_chocobo_battle)
 
     def zolom_tick(self):
         if self.zolom_timer <= 0:
@@ -148,18 +163,35 @@ class State:
 
     def walk(self, region: int, ground_type: int, lr: bool, movement: bool = True, zolombox: bool = False,
              chocotracks: bool = False, more_than_one_party_member: bool = True, yuffie_chance: int = 0):
+        """
+        Performs one frame of world map simulation, simulating left/right incrementation, passive zolom behavior, and
+        encounter logic.
+
+        :param region: Integer (required). Region ID. See constants.Region
+        :param ground_type: Integer (required). Ground type ID. See constants.Ground
+        :param lr: Boolean (required). If true, any of Left, Right, L1, or R1 are simulated as being pressed on this frame, and the corresponding RNG call happens.
+        :param movement: Boolean (default=True). If true, Fractions increment on this frame as a result of the player moving. If false, Fractions do not increment, either because no movement occurs, that movement is menu-buffered, or the current ground triangle is not hostile.
+        :param zolombox: Boolean (default=False). If true, the player is within the Zolom box and passive Zolom behavior is performed.
+        :param chocotracks: Boolean (default=False). If true, the ground the player is standing on is flagged to be able to spawn a Chocobo encounter.
+        :param more_than_one_party_member: Boolean. If false, the party consists of exactly one party member. (Usually true)
+        :param yuffie_chance: Integer. The chance for the Mystery Ninja to appear should an encounter check happen on this frame of movement (out of 256). See constants.MysteryNinja
+        :raise Battle: If a battle occurs, Battle is thrown.
+        """
         if lr:
             self.rng.rand()
         if zolombox:
             self.zolom_tick()
-        if ground_type == 0x10:
-            ground_type = 0
-        if ground_type == 0x18:
-            ground_type = 8
-        if ground_type in GROUND_TYPES[region] and movement:
+        if movement:
             if self.frac >= 0x10:
                 self.frac = 0
-                self.enc_check(enctable=EncTable(ENCOUNTER_DATA[region][GROUND_TYPES[region].index(ground_type)]),
+                if ground_type == 0x10:
+                    ground_type = 0
+                if ground_type == 0x18:
+                    ground_type = 8
+                ground_idx = 0
+                if ground_type in GROUND_TYPES[region]:
+                    ground_idx = GROUND_TYPES[region].index(ground_type)
+                self.enc_check(enctable=EncTable(ENCOUNTER_DATA[region][ground_idx]),
                                chocotracks=chocotracks, more_than_one_party_member=more_than_one_party_member,
                                yuffie_chance=yuffie_chance)
             else:

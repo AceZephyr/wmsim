@@ -2,6 +2,7 @@
 HOURS = 3600
 MINUTES = 60
 
+
 class Region:
     Midgar = 0
     Grasslands = 1
@@ -38,6 +39,18 @@ class Ground:
     Gold_Saucer_Desert = 24  # Functions identically to Desert
     Jungle = 25
     Default = -1
+
+
+class MysteryNinja:
+    Default = 0
+    Junon = 32
+    Gongaga = 64
+    Nibel = 64
+    Rocket_Pad_Launch = 255
+    Woodlands = 128
+    Mideel = 128
+    Goblin_Island = 128
+    Round_Island = 128
 
 
 GROUND_TYPES = [
