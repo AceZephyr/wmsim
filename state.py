@@ -33,12 +33,13 @@ class State:
     Describes the state of the world map and all data needed to maintain that state. Use walk() to perform simulations.
     """
 
-    def __init__(self, igt: int, zolombox_init: bool = False):
+    def __init__(self, igt: int, zolombox_init: bool = False, more_than_one_party_member: bool = False):
         """
         State constructor. Note that the IGt given is the IGT at which the world map is seeded, not the IGT at which an action is performed to exit to the world map. Depending on game version and circumstance, there is a delay until when the world map is seeded. This is often 3 seconds on the PSX version, but varies and should be tested in individual circumstances.
 
         :param igt: The world map's seeding IGT
         :param zolombox_init: Boolean (default=False): This should be True if the player spawns within the Zolom Box when entering the world map.
+        :param more_than_one_party_member: Boolean (default=False) Default value of more_than_one_party_member on each encounter check if not otherwise specified
         """
         self.rng = RNG(igt)
         self.frac = -0x8c
@@ -56,8 +57,26 @@ class State:
 
         self.movement_frames = 0
 
+        self.more_than_one_party_member = more_than_one_party_member
+
         if zolombox_init:
             self.zolom_tick()
+
+    def __copy__(self: "State"):
+        result = State.__new__(State)
+        result.rng = self.rng.__copy__()
+        result.frac = self.frac
+        result.danger = self.danger
+        result.lureval = self.lureval
+        result.chocoval = self.chocoval
+        result.preemptval = self.preemptval
+        result.lastenc = self.lastenc
+        result.walkframes = self.walkframes
+        result.zolom_timer = self.zolom_timer
+        result.encounter_checks = self.encounter_checks
+        result.movement_frames = self.movement_frames
+        result.more_than_one_party_member = self.more_than_one_party_member
+        return result
 
     def vehicle_frac_reset(self):
         self.frac = -0x1e
@@ -72,8 +91,10 @@ class State:
     def preempt_128(self):
         return int((self.preemptval & 0x80) != 0)
 
-    def enc_check(self, enctable: EncTable, chocotracks: bool = False, more_than_one_party_member: bool = True,
+    def enc_check(self, enctable: EncTable, chocotracks: bool = False, more_than_one_party_member: bool = None,
                   yuffie_chance: int = 0):
+        if more_than_one_party_member is None:
+            more_than_one_party_member = self.more_than_one_party_member
         self.encounter_checks += 1
         enc = -1
         is_preempt = 0

@@ -1,9 +1,10 @@
-from copy import deepcopy
+import faulthandler
+import gc
 
 from constants import MINUTES, HOURS
 from state import State, Battle
-from wmrng import WorldMapRNG
 from util import format_igt
+from wmrng import WorldMapRNG
 
 # Disc 1 Skip (from Kalm. https://youtu.be/WYXqVmjhZco)
 
@@ -41,7 +42,7 @@ DISTANCE_TO_COTA = 491
 # Searches for menu pattern to get through a given state
 def search_menus(initial_state: State, frames: int, max_menus=50):
     initial_state.movement_frames = 0
-    s = deepcopy(initial_state)
+    s = initial_state.__copy__()
 
     menu_frames = []
     while s.movement_frames < frames:
@@ -53,7 +54,7 @@ def search_menus(initial_state: State, frames: int, max_menus=50):
                 raise Exception("should never happen")
             continue
 
-        s_peek = deepcopy(s)
+        s_peek = s.__copy__()
         try:
             s_peek.walk(0, 0, True)
             s_peek.movement_frames += 1
@@ -70,20 +71,20 @@ def search_menus(initial_state: State, frames: int, max_menus=50):
             return None, None
 
     window_start_list = []
-    no_menu_state = deepcopy(initial_state)
+    no_menu_state = initial_state.__copy__()
     no_menu_state.movement_frames = 0
     prev_min = -1
 
     for i in range(len(menu_frames)):
         current_min = prev_min + 1
-        menu_state = deepcopy(no_menu_state)
+        menu_state = no_menu_state.__copy__()
         try:
             menu_state.walk(0, 0, lr=True, movement=False)
             menu_state.movement_frames += 1
         except Battle:
             breakpoint()  # something unexpected has happened!
             raise Exception()
-        last_good_menu_state = deepcopy(menu_state)
+        last_good_menu_state = menu_state.__copy__()
 
         while no_menu_state.movement_frames < menu_frames[i] - 1:
             try:
@@ -97,14 +98,14 @@ def search_menus(initial_state: State, frames: int, max_menus=50):
                     breakpoint()  # something unexpected has happened!
                     raise Exception()
                 current_min = no_menu_state.movement_frames
-                menu_state = deepcopy(no_menu_state)
+                menu_state = no_menu_state.__copy__()
                 try:
                     menu_state.walk(0, 0, lr=True, movement=False)
                     menu_state.movement_frames += 1
                 except Battle:
                     breakpoint()  # something unexpected has happened!
                     raise Exception()
-                last_good_menu_state = deepcopy(menu_state)
+                last_good_menu_state = menu_state.__copy__()
                 continue
             try:
                 no_menu_state.walk(0, 0, True)
@@ -146,7 +147,7 @@ def print_step_graph(state: State, enc_checks: int, width=50, danger_increase=51
     CHR_ENC = "X"
     CHR_NOENC = "."
     CONST = 18
-    r = deepcopy(state.rng)
+    r = state.rng.__copy__()
     init_danger = state.danger
     for _ in range(17 - state.frac):
         r.rand()
@@ -266,7 +267,7 @@ def run_for_igt(igt: int):
         assert s is not None
 
         t5_5_states = []
-        t5_4_state = None
+        t5_5_start_state = None
 
         # before_up_state = deepcopy(s)
 
@@ -275,7 +276,7 @@ def run_for_igt(igt: int):
             # if t5_up_value + t5_count not in t5_up_safe_values:
             #     continue
 
-            t5_4_state = deepcopy(s)
+            t5_4_state = s.__copy__()
             try:
                 for _ in range(t5_up_value):
                     t5_4_state.walk(0, 0, lr=True)
@@ -295,16 +296,18 @@ def run_for_igt(igt: int):
                 t5_up_safe_values_2[t5_count].append(t5_up_value)
             else:
                 t5_up_safe_values_2[t5_count] = [t5_up_value]
-            t5_5_states.append(t5_4_state)
+            t5_5_states.append(t5_4_state.__copy__())
+            t5_5_start_state = t5_4_state.__copy__()
 
-        if t5_4_state is None or len(t5_5_states) == 0:
+        if t5_5_start_state is None or len(t5_5_states) == 0:
             continue
 
         # sanity checking
         assert len(set(state.frac for state in t5_5_states)) == 1
         assert len(set(state.rng.idx for state in t5_5_states)) == 1
+        assert len(set(state.danger for state in t5_5_states)) == 1
 
-        s = t5_4_state
+        s = t5_5_start_state
 
         t5_5_menu_frames, t5_5_window_starts = search_menus(s, T5_5_LEFT_GRASS - 6, max_menus=3)
         if t5_5_menu_frames is None:
@@ -371,29 +374,30 @@ def run_for_igt(igt: int):
 def main():
     with open(FILENAME, "w") as file:
         file.write("")
-    for igt in range(START_IGT, END_IGT):
-        ret = run_for_igt(igt)
-        if ret is None:
-            continue
-        t4_data, t5_up_safe_values, t5_up_safe_values_2, t5_three_menu_safe_counts, t5_data, end_data = ret
-        mins = []
-        min_pos = 0
-        min_all = -12
-        opt_pos = 0
-        opt_all = -12
-        for f in end_data:
-            if f + 1 not in end_data.keys() or len(end_data[f]) <= len(end_data[f + 1]):
-                mins.append(f)
-            if f >= 0:
-                if len(end_data[f]) < len(end_data[min_pos]):
-                    min_pos = f
-                if f + 2 * len(end_data[f]) < opt_pos + 2 * len(end_data[opt_pos]):
-                    opt_pos = f
-            if len(end_data[f]) < len(end_data[min_all]):
-                min_all = f
-            if abs(f) + 2 * len(end_data[f]) < abs(opt_all) + 2 * len(end_data[opt_all]):
-                opt_all = f
-        with open(FILENAME, "a") as file:
+        for igt in range(START_IGT, END_IGT):
+            gc.disable()
+            ret = run_for_igt(igt)
+            gc.enable()
+            if ret is None:
+                continue
+            t4_data, t5_up_safe_values, t5_up_safe_values_2, t5_three_menu_safe_counts, t5_data, end_data = ret
+            mins = []
+            min_pos = 0
+            min_all = -12
+            opt_pos = 0
+            opt_all = -12
+            for f in end_data:
+                if f + 1 not in end_data.keys() or len(end_data[f]) <= len(end_data[f + 1]):
+                    mins.append(f)
+                if f >= 0:
+                    if len(end_data[f]) < len(end_data[min_pos]):
+                        min_pos = f
+                    if f + 2 * len(end_data[f]) < opt_pos + 2 * len(end_data[opt_pos]):
+                        opt_pos = f
+                if len(end_data[f]) < len(end_data[min_all]):
+                    min_all = f
+                if abs(f) + 2 * len(end_data[f]) < abs(opt_all) + 2 * len(end_data[opt_all]):
+                    opt_all = f
             file.write(f"""{igt}, {format_igt(igt)}
 
 Min: {min_pos}: {len(end_data[min_pos])} ({min_all}: {len(end_data[min_all])})
@@ -416,8 +420,9 @@ Mins:
             for m in mins:
                 file.write(f"{m} {len(end_data[m])} {end_data[m]}\n")
             file.write(f"{'-' * 80}\n")
-        print(igt, format_igt(igt))
+            print(igt, format_igt(igt))
 
 
 if __name__ == '__main__':
+    faulthandler.enable()
     main()

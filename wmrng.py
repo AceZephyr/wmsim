@@ -33,6 +33,13 @@ class WorldMapRNG:
             self.idx = 0
         return self.rng[self.idx]
 
+    def __copy__(self: "WorldMapRNG"):
+        result = WorldMapRNG.__new__(WorldMapRNG)
+        result.rng = [r for r in self.rng]
+        result.idx = self.idx
+        result.calls = self.calls
+        return result
+
     def __init__(self, igt: int):
         self.rng = None
         self.idx = 0
